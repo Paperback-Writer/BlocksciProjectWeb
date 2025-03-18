@@ -1,0 +1,7 @@
+/Books-Management-System/src/main/java/com/book/domain/ImageCategory.java
+/Books-Management-System/src/main/java/com/book/domain/BlockchainData.java
+/Books-Management-System/src/main/java/com/book/service/BlockchainService.java
+/Books-Management-System/src/main/java/com/book/service/RemoteDataService.java
+/Books-Management-System/src/main/java/com/book/domain/Image.java
+/Books-Management-System/src/main/java/com/book/web/BlockchainAnalysisController.java
+/Books-Management-System/src/main/java/com/book/web/WebConfig.java
