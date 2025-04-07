@@ -1,8 +1,14 @@
 com/book/domain/ImageCategory.class
+com/book/service/BlockchainDataService$1.class
 com/book/web/BlockchainAnalysisController.class
+com/book/dao/BlockchainDataDao$1.class
+com/book/web/WebConfig.class
+com/book/service/RemoteDataService$1.class
+com/book/config/DatabaseConfig.class
 com/book/domain/Image.class
 com/book/service/BlockchainService.class
 com/book/service/RemoteDataService.class
 com/book/domain/BlockchainData.class
-com/book/web/WebConfig.class
-com/book/service/RemoteDataService$1.class
+com/book/domain/BlockchainDataEntity.class
+com/book/dao/BlockchainDataDao.class
+com/book/service/BlockchainDataService.class

@@ -13,7 +13,7 @@ public class BlockchainService {
     private static final String PROJECT_BASE_PATH = System.getProperty("user.dir");
     private static final String IMAGE_BASE_PATH = PROJECT_BASE_PATH + "/src/main/webapp/static/blockchain-images/";
     
-    public List<Image> getBlockchainImages(String cryptocurrency, String metric) {
+    public List<Image> getBlockchainImages(String cryptocurrency, String metric, String analysisType) {
         List<Image> images = new ArrayList<>();
         
         System.out.println("------- 区块链图片获取调试信息 -------");
@@ -21,8 +21,9 @@ public class BlockchainService {
         System.out.println("图片基础路径: " + IMAGE_BASE_PATH);
         System.out.println("当前加密货币: " + cryptocurrency);
         System.out.println("当前指标: " + metric);
+        System.out.println("分析类型: " + analysisType);
         
-        File folder = new File(IMAGE_BASE_PATH + cryptocurrency + "/" + metric);
+        File folder = new File(IMAGE_BASE_PATH + cryptocurrency + "/" + metric + "/" + analysisType);
         
         System.out.println("目标文件夹绝对路径: " + folder.getAbsolutePath());
         System.out.println("目标文件夹是否存在: " + folder.exists());
@@ -40,7 +41,7 @@ public class BlockchainService {
                 
                 for (File file : files) {
                     // 生成相对路径
-                    String path = "/static/blockchain-images/" + cryptocurrency + "/" + metric + "/" + file.getName();
+                    String path = "/static/blockchain-images/" + cryptocurrency + "/" + metric + "/" + analysisType + "/" + file.getName();
                     
                     System.out.println("处理图片: " + file.getName());
                     System.out.println("生成的图片路径: " + path);

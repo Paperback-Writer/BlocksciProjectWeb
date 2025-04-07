@@ -26,51 +26,69 @@
             margin-top: 20px;
             flex: 1;
         }
-        .images-row {
+        
+        /* 左侧 metrics 样式 */
+        .metrics-list {
             display: flex;
-            justify-content: center;
-            align-items: stretch;
-            margin-top: 50px; /* 调整垂直位置 */
+            flex-direction: column;
+            align-items: center;
+            padding-right: 10px;
         }
-        .blockchain-image-container {
-            margin-bottom: 20px;
-            padding: 0;
+        
+        .metric-tab {
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: white;
             border: 1px solid #ddd;
             border-radius: 5px;
+            font-weight: bold;
+            color: #495057;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .metric-tab:hover {
+            background-color: #e9ecef;
+        }
+        
+        .metric-tab.active {
+            background-color: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        /* 下拉菜单优化 */
+        .custom-dropdown-width {
+            width: auto;
+            min-width: 200px;
+            max-width: 280px;
+        }
+
+        /* 让两个下拉菜单并排 */
+        .dropdown-container {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* 让两个下拉框之间有一点间距 */
+        }
+
+        /* 图片展示区域 */
+        .blockchain-image-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 500px; /* 固定高度 */
-            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
         }
 
         .blockchain-image-container img {
-            width: 100%; /* 改为100% */
-            height: auto; /* 保持原始比例 */
-            transform: scale(2); /* 放大两倍 */
-            object-fit: contain; /* 保持完整图片 */
-            object-position: center; /* 居中 */
-}
-        .nav-tabs .nav-link {
-            background-color: #f8f9fa;
-            color: #495057;
-            transition: all 0.3s ease;
-        }
-        .nav-tabs .nav-link.active {
-            background-color: #e9ecef;
-            color: #212529;
-            font-weight: bold;
-            border-color: #dee2e6 #dee2e6 #e9ecef;
-        }
-        .nav-tabs .nav-link:hover {
-            background-color: #e9ecef;
-        }
-        .footer {
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 15px 0;
-            text-align: center;
-            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
         }
     </style>
 </head>
@@ -79,12 +97,30 @@
         <h1 class="text-center my-4">Blockchain Analysis Platform</h1>
         
         <div class="row">
-            <div class="col-md-12">
+            <!-- 左侧指标选择 -->
+            <div class="col-md-3">
+                <h5 class="text-center">Metrics</h5>
+                <div class="metrics-list">
+                    <c:forEach items="${metrics}" var="metric">
+                        <a class="metric-tab ${selectedMetric == metric ? 'active' : ''}" 
+                           href="${contextPath}/blockchain.html?cryptocurrency=${selectedCryptocurrency}&metric=${metric}&analysisType=${selectedAnalysisType}">
+                            ${metric}
+                        </a>
+                    </c:forEach>
+                </div>
+            </div>
+
+            <!-- 右侧内容区域 -->
+            <div class="col-md-9">
                 <form id="analysisForm" method="get" action="${contextPath}/blockchain.html">
-                    <div class="form-row">
-                        <div class="col-md-6">
+                    <div class="dropdown-container">
+                        <!-- Cryptocurrency 选择框 -->
+                        <div>
                             <label for="cryptocurrency">Select Cryptocurrency:</label>
-                            <select class="form-control" id="cryptocurrency" name="cryptocurrency" onchange="this.form.submit()">
+                            <select class="form-control form-control-sm custom-dropdown-width" 
+                                    id="cryptocurrency" 
+                                    name="cryptocurrency" 
+                                    onchange="updateForm()">
                                 <c:forEach items="${cryptocurrencies}" var="crypto">
                                     <option value="${crypto}" ${selectedCryptocurrency == crypto ? 'selected' : ''}>
                                         <c:choose>
@@ -99,45 +135,44 @@
                                 </c:forEach>
                             </select>
                         </div>
-                        
-                        <div class="col-md-6">
-                            <label>Select Metric:</label>
-                            <ul class="nav nav-tabs" id="metricTabs">
-                                <c:forEach items="${metrics}" var="metric">
-                                    <li class="nav-item">
-                                        <a class="nav-link ${selectedMetric == metric ? 'active' : ''}" 
-                                           data-metric="${metric}"
-                                           href="${contextPath}/blockchain.html?cryptocurrency=${selectedCryptocurrency}&metric=${metric}">
-                                            ${metric}
-                                        </a>
-                                    </li>
-                                </c:forEach>
-                            </ul>
+
+                        <!-- Analysis Type 选择框 -->
+                        <div>
+                            <label for="analysisType">Analysis Type:</label>
+                            <select class="form-control form-control-sm custom-dropdown-width" 
+                                    id="analysisType" 
+                                    name="analysisType" 
+                                    onchange="updateForm()">
+                                <option value="static" ${selectedAnalysisType == 'static' ? 'selected' : ''}>Static</option>
+                                <option value="temporal" ${selectedAnalysisType == 'temporal' ? 'selected' : ''}>Temporal</option>
+                                <option value="cluster" ${selectedAnalysisType == 'cluster' ? 'selected' : ''}>Cluster</option>
+                            </select>
                         </div>
                     </div>
                 </form>
-            </div>
-        </div>
 
-        <div class="row images-row">
-            <c:choose>
-                <c:when test="${not empty images}">
-                    <c:forEach items="${images}" var="image">
-                        <div class="col-md-4 d-flex justify-content-center">
-                            <div class="blockchain-image-container">
-                                <img src="${contextPath}${image.path}" alt="${image.name}">
+                <!-- 图片展示区域 -->
+                <div class="row">
+                    <c:choose>
+                        <c:when test="${not empty images}">
+                            <c:forEach items="${images}" var="image">
+                                <div class="col-md-12 d-flex justify-content-center">
+                                    <div class="blockchain-image-container">
+                                        <img src="${contextPath}${image.path}" alt="${image.name}">
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="col-12">
+                                <p class="alert alert-info text-center">
+                                    No analysis images available
+                                </p>
                             </div>
-                        </div>
-                    </c:forEach>
-                </c:when>
-                <c:otherwise>
-                    <div class="col-12">
-                        <p class="alert alert-info text-center">
-                            No analysis images available
-                        </p>
-                    </div>
-                </c:otherwise>
-            </c:choose>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -148,17 +183,24 @@
     </footer>
 
     <script>
+        function updateForm() {
+            const cryptocurrency = document.getElementById('cryptocurrency').value;
+            const analysisType = document.getElementById('analysisType').value;
+            const metric = '${selectedMetric}';
+            
+            window.location.href = '${contextPath}/blockchain.html?cryptocurrency=' + 
+                cryptocurrency + '&metric=' + encodeURIComponent(metric) + 
+                '&analysisType=' + analysisType;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            const metricTabs = document.getElementById('metricTabs');
-            const currentMetric = '${selectedMetric}';
+            const metricTabs = document.querySelectorAll('.metric-tab');
 
-            metricTabs.addEventListener('click', function(e) {
-                const tabs = metricTabs.querySelectorAll('.nav-link');
-                tabs.forEach(tab => tab.classList.remove('active'));
-
-                if (e.target.classList.contains('nav-link')) {
-                    e.target.classList.add('active');
-                }
+            metricTabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    metricTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
             });
         });
     </script>
